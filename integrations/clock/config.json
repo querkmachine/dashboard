@@ -1,0 +1,11 @@
+{
+	"name": "Clock",
+	"stylesheets": [
+		"styles.css"
+	],
+	"scripts": [
+		"clock.js"
+	],
+	"dateFormat": "D MMMM YYYY",
+	"timeFormat": "H:mm"
+}
