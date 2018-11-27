@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	{% for stylesheet in settings.theme.stylesheets %}
+		<link rel="stylesheet" href="/themes/{{ settings.theme.path }}/{{ stylesheet }}">
+	{% endfor %}
+	{% for script in settings.theme.scripts %}
+		<script src="/themes/{{ settings.theme.path }}/{{ script }}"></script>
+	{% endfor %}
+	<title>Rainbow Dashboard</title>
+</head>
+<body>
+	Dashboard home.
+
+	{% for integration in settings.integrations -%}
+		{% set integrationConfig = settings[integration] %}
+		<section id="{{ integration }}">
+			{% include "integrations/" + integration + "/index.html" ignore missing %}
+			{% for stylesheet in integrationConfig.stylesheets %}
+				<link rel="stylesheet" href="/integrations/{{ integration }}/{{ stylesheet }}">
+			{% endfor %}
+			{% for script in integrationConfig.scripts %}
+				<script src="/integrations/{{ integration }}/{{ script }}"></script>
+			{% endfor %}
+		</section>
+	{%- endfor %}
+
+	{% if settings.debug -%}
+	<!-- DEBUG -->
+	<div style="position:fixed;top:0;right:0;width:30%;height:100vh;background:rgba(0,0,0,.6);color:#fff;overflow:auto;"><code>{{ settings | dump }}</code></div>
+	{%- endif %}
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "rainbow-dashboard",
+  "description": "Kim's home dashboard app",
+  "version": "1.0.0",
+  "maintainers": [
+    {
+      "name": "Kimberly Grey",
+      "email": "hi@berly.kim",
+      "web": "http://berly.kim"
+    }
+  ],
+  "dependencies": {
+    "express": "^4.16.4",
+    "http": "^0.0.0",
+    "lodash": "^4.17.11",
+    "nunjucks": "^3.1.4",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}

@@ -1,0 +1,10 @@
+{
+	"port": 9001, // port to start the dashboard on
+	"debug": true, // enable debugging information
+	"theme": "dark", // directory name of the theme to use
+	"integrations": [ // array of integrations to enable
+		"clock"
+	]
+	// objects named after integrations (e.g. "clock") can be 
+	// used to pass further configuration options to them
+}
