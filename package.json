@@ -16,7 +16,5 @@
     "nunjucks": "^3.1.4",
     "path": "^0.12.7"
   },
-  "devDependencies": {
-    "gulp": "^3.9.1"
-  }
+  "devDependencies": {}
 }
