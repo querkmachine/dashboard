@@ -1,5 +1,8 @@
-#clock .date,
-#clock .time {
+.date,
+.time {
 	display: block;
-	padding: 1rem;
+}
+
+.date {
+	margin-bottom: .5rem;
 }
