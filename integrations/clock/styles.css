@@ -1,3 +1,5 @@
-#clock {
-	
+#clock .date,
+#clock .time {
+	display: block;
+	padding: 1rem;
 }

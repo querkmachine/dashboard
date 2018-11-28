@@ -1,19 +1,25 @@
 class Clock {
 	constructor() {
-		this.clock = document.getElementById('clock');
-		this.clockDate = clock.querySelector('.date');
-		this.clockTime = clock.querySelector('.time');
+		this.settings = settings;
+		this.clockDate = document.querySelector('.date');
+		this.clockTime = document.querySelector('.time');
+		console.log(this.settings, this.clockDate, this.clockTime)
 		this.setTime();
-		this.startTheClock();
-	}
-	setTime() {
-		const now = new Date();
-		this.clockTime.innerHTML = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-	}
-	startTheClock() {
 		setInterval(() => {
 			this.setTime();
 		}, 1000);
+	}
+	setTime() {
+		const now = moment();
+		// Date
+		this.clockDate.innerText = now.format(this.settings.dateFormat);
+		// Time
+		//let clockHTML = now.format(this.settings.timeFormat);
+		let clockHTML = '';
+		clockHTML += `<span class="big">${now.format('h')}:${now.format('mm')}</span>`;
+		clockHTML += `<span class="seconds">:${now.format('ss')}</span>`;
+		clockHTML += `<span class="meridian">${now.format('a')}</span>`;
+		this.clockTime.innerHTML = clockHTML;
 	}
 }
 

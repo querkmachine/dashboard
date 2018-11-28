@@ -40,7 +40,6 @@ app.use('/integrations', express.static('integrations'));
 
 // Dashboard page routing
 app.get('/', (req, res) => {
-	//res.sendFile(`${__dirname}/index.html`);
 	res.render(`index.html`, {
 		settings: config
 	});
@@ -50,14 +49,17 @@ app.get('/', (req, res) => {
 config.integrations.forEach((int) => {
 	console.log(`Loading "${int}" integration.`);
 	app.get(`/integration/${int}`, (req, res) => {
-		//res.sendFile(`${__dirname}/integrations/${int}/index.html`);
+		const integrationSettings = config[int];
+		integrationSettings.path = int;
+		integrationSettings.theme = config.theme;
 		res.render(`integrations/${int}/index.html`, {
-			settings: config
+			settings: integrationSettings
 		});
 	});
 });
 
 // Make the server actually accessible
 http.listen(config.port, () => {
+	console.log('Full configuration:', config);
 	console.log(`Server started on http://127.0.0.1:${config.port}.`);
 });

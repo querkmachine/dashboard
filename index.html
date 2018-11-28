@@ -1,35 +1,51 @@
+{% set externalUriRegex = r/^(https?|\/\/)/i %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	{% for stylesheet in settings.theme.stylesheets %}
-		<link rel="stylesheet" href="/themes/{{ settings.theme.path }}/{{ stylesheet }}">
-	{% endfor %}
-	{% for script in settings.theme.scripts %}
-		<script src="/themes/{{ settings.theme.path }}/{{ script }}"></script>
-	{% endfor %}
-	<title>Rainbow Dashboard</title>
+	<script>const settings = {{ settings | dump | safe }}</script>
+	{% for script in settings.theme.scripts -%}
+		{% if externalUriRegex.test(script) -%}
+			<script src="{{ script }}"></script>
+		{% else %}
+			<script src="/themes/{{ settings.theme.path }}/{{ script }}"></script>
+		{%- endif %}
+	{%- endfor %}
+	{% for stylesheet in settings.theme.stylesheets -%}
+		{% if externalUriRegex.test(stylesheet) -%}
+			<link rel="stylesheet" href="{{ stylesheet }}">
+		{% else %}
+			<link rel="stylesheet" href="/themes/{{ settings.theme.path }}/{{ stylesheet }}">
+		{%- endif %}
+	{%- endfor %}
+	<title>Dashboard</title>
 </head>
-<body>
-	Dashboard home.
+<body id="dashboard">
 
 	{% for integration in settings.integrations -%}
-		{% set integrationConfig = settings[integration] %}
-		<section id="{{ integration }}">
-			{% include "integrations/" + integration + "/index.html" ignore missing %}
-			{% for stylesheet in integrationConfig.stylesheets %}
-				<link rel="stylesheet" href="/integrations/{{ integration }}/{{ stylesheet }}">
-			{% endfor %}
-			{% for script in integrationConfig.scripts %}
-				<script src="/integrations/{{ integration }}/{{ script }}"></script>
-			{% endfor %}
-		</section>
+		{% set integrationWidth = settings[integration].width or 1 %}
+		{% set integrationHeight = settings[integration].height or 1 %}
+		<iframe class="section__iframe width-{{ integrationWidth }} height-{{ integrationHeight }}" id="{{ integration }}" src="integration/{{ integration }}"></iframe>
 	{%- endfor %}
 
 	{% if settings.debug -%}
 	<!-- DEBUG -->
-	<div style="position:fixed;top:0;right:0;width:30%;height:100vh;background:rgba(0,0,0,.6);color:#fff;overflow:auto;"><code>{{ settings | dump }}</code></div>
+	<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);color:#fff;overflow:auto;" id="DEBUGMODE" hidden><code>{{ settings | dump }}</code></div>
+	<script>
+		const debugScreen = document.getElementById('DEBUGMODE');
+		document.addEventListener('keypress', (event) => {
+			if(event.key === 'd' && event.metaKey === true) {
+				event.preventDefault();
+				if(debugScreen.getAttribute('hidden') !== null) {
+					debugScreen.removeAttribute('hidden');
+				}
+				else {
+					debugScreen.setAttribute('hidden', 'hidden');
+				}
+			}
+		});
+	</script>
 	{%- endif %}
 
 </body>

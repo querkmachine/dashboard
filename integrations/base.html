@@ -1,0 +1,49 @@
+{% set externalUriRegex = r/^(https?|\/\/)/i %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<script>const settings = {{ settings | dump | safe }}</script>
+	<!-- Stylesheets -->
+	{% for stylesheet in settings.theme.stylesheets -%}
+		{% if externalUriRegex.test(stylesheet) -%}
+			<link rel="stylesheet" href="{{ stylesheet }}">
+		{% else %}
+			<link rel="stylesheet" href="/themes/{{ settings.theme.path }}/{{ stylesheet }}">
+		{%- endif %}
+	{%- endfor %}
+	{% for stylesheet in settings.stylesheets -%}
+		{% if externalUriRegex.test(stylesheet) -%}
+			<link rel="stylesheet" href="{{ stylesheet }}">
+		{% else %}
+			<link rel="stylesheet" href="/integrations/{{ settings.path }}/{{ stylesheet }}">
+		{%- endif %}
+	{%- endfor %}
+	<title>Dashboard</title>
+</head>
+<body>
+
+	{% block main %}
+		No content loaded.
+	{% endblock %}
+
+
+	<!-- Javascript -->
+	{% for script in settings.theme.scripts -%}
+		{% if externalUriRegex.test(script) -%}
+			<script src="{{ script }}"></script>
+		{% else %}
+			<script src="/themes/{{ settings.theme.path }}/{{ script }}"></script>
+		{%- endif %}
+	{%- endfor %}
+	{% for script in settings.scripts -%}
+		{% if externalUriRegex.test(script) -%}
+			<script src="{{ script }}"></script>
+		{% else %}
+			<script src="/integrations/{{ settings.path }}/{{ script }}"></script>
+		{%- endif %}
+	{%- endfor %}
+
+</body>
+</html>
