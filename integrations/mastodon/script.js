@@ -1,8 +1,3 @@
-/**
- * TODO: 
- *   Custom emoji???
- */
-
 class Mastodon {
 	constructor() {
 		this.settings = settings;
@@ -25,14 +20,14 @@ class Mastodon {
 			data.reverse();
 			// split into pieces for addTootToTimeline
 			$.each(data, (i, toot) => {
-				console.log('newToot', data);
+				//console.log('newToot', toot);
 				this.addTootToTimeline(toot);
 			});
 		})
 	}
 	startStream() {
 		this.api.stream('user', (data) => {
-			console.log('new streamed toot', data);
+			//console.log('new streamed toot', data);
 			if(data.event === "update") {
 				this.addTootToTimeline(data.payload);
 			}
@@ -60,7 +55,7 @@ class Mastodon {
 						</span>
 						<time class="font-narrow toot__date" datetime="${toot.created_at}">${toot.created_at}</time>
 					</header>
-					<div class="toot__body">${toot.content}</div>
+					<div class="toot__body">${this.parseTootContent(toot)}</div>
 					${ (toot.media_attachments.length > 0) ? this.parseMediaAttachments(toot.media_attachments) : '' }
 				</article>
 			</li>
@@ -96,6 +91,13 @@ class Mastodon {
 		});
 		returnHtml += '</div>';
 		return returnHtml;
+	}
+	parseTootContent(toot) {
+		let tootContent = toot.content;
+		$.each(toot.emojis, (i, emoji) => {
+			tootContent = tootContent.replace(new RegExp(`:${emoji.shortcode}:`, 'gm'), `<img class="toot__emoji" alt="emoji" src="${emoji.static_url}">`);
+		});
+		return tootContent;
 	}
 }
 

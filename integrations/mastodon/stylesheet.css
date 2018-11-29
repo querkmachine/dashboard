@@ -59,6 +59,10 @@
 		.toot__body a {
 			color: inherit;
 		}
+	.toot__emoji {
+		width: 1em;
+		height: 1em;
+	}
 	.toot__media {
 		display: flex;
 		justify-content: space-between;
