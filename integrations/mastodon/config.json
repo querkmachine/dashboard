@@ -1,0 +1,13 @@
+{
+	"name": "Mastodon",
+	"scripts": [
+		"https://code.jquery.com/jquery-3.3.1.min.js",
+		"https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.min.js",
+		"timeago.locale.js",
+		"mastodon.js",
+		"script.js"
+	],
+	"stylesheets": [
+		"stylesheet.css"
+	]
+}
