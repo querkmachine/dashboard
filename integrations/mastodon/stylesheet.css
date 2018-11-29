@@ -9,6 +9,7 @@
 
 .toot {
 	padding: 1rem;
+	border-radius: 1rem;
 	background-color: var(--mid);
 }
 	.toot__rebloggedby {
