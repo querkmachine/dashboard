@@ -26,7 +26,7 @@
 	{% for integration in settings.integrations -%}
 		{% set integrationWidth = settings[integration].width or 1 %}
 		{% set integrationHeight = settings[integration].height or 1 %}
-		<iframe class="section__iframe width-{{ integrationWidth }} height-{{ integrationHeight }}" id="{{ integration }}" src="integration/{{ integration }}"></iframe>
+		<iframe scrolling="no" class="section__iframe width-{{ integrationWidth }} height-{{ integrationHeight }}" id="{{ integration }}" src="integration/{{ integration }}"></iframe>
 	{%- endfor %}
 
 	{% if settings.debug -%}
