@@ -21,6 +21,7 @@ body {
 	color: var(--light);
 	background-color: var(--black);
 	font-family: var(--default-font-stack);
+	user-select: none;
 }
 
 /**
