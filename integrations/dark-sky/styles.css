@@ -1,0 +1,87 @@
+#darksky {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+
+#darksky-attribution {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	color: inherit;
+	opacity: .67;
+}
+
+.darksky-label {
+	margin-bottom: .5rem;
+}
+
+.weather {
+	
+}
+	.weather__inner {
+		display: flex;
+		align-items: center;
+	}
+	.weather__icon {
+		flex-shrink: 0;
+		width: 10rem;
+		margin-right: 1rem;
+	}
+	.weather__body {
+		flex-grow: 1;
+	}
+	.weather__summary {
+		margin-top: .5rem;
+	}
+
+.temperature {
+
+}
+	.temperature__actual {
+
+	}
+	.temperature__apparent {
+		margin-left: .25rem;
+		opacity: .67;
+	}
+
+.rain {
+	margin-top: 1rem;
+}
+	.rain__graph {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: flex-end;
+		height: 150px;
+		border-bottom: 1px solid var(--mid);
+	}
+	.rain__bar {
+		display: block;
+		width: 4px;
+		background-color: rgba(43, 134, 243, 1);
+		border-top-left-radius: 2px;
+		border-top-right-radius: 2px;
+	}
+		.rain__bar + .rain__bar {
+			margin-left: 2px;
+		}
+	.rain__summary {
+		margin-top: .5rem;
+	}
+
+
+
+@media (orientation: landscape) {
+	#darksky {
+		flex-direction: row;
+		align-items: flex-start;
+	}
+	.rain {
+		flex-grow: 1;
+		margin-top: 0;
+		margin-left: 2rem;
+	}
+}
