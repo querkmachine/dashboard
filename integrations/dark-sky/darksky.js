@@ -1,7 +1,7 @@
 class DarkSky {
 	constructor() {
 		this.settings = settings;
-		this.$container = $('#darksky');
+		this.$container = $('.weather').eq(0);
 		this.forecast = {};
 		this.getForecast();
 		setInterval(() => {
@@ -21,48 +21,127 @@ class DarkSky {
 		}).done((data) => {
 			console.log(data);
 			this.forecast = data;
-			this.$container.html('');
-			this.renderPrecip();
-			this.renderCurrent();
+			this.$container.html('').append(this.renderWeatherIcon()).append(this.renderNextHourSummary()).append(this.renderTemperature());
+			if(this.showRainGraph(data.minutely.data)) {
+				this.$container.addClass('weather--rain').append(this.renderRainGraph());
+			}
+			else {
+				this.$container.removeClass('weather--rain');
+				this.$container.find('.weather__rain-graph').remove();
+			}
 		});
 	}
-	renderCurrent() {
-		const data = this.forecast.currently;
-		const template = `
-			<div class="weather">
-				<div class="weather__inner">
-					<!--<div class="weather__icon">${data.icon}</div>-->
-					<div class="weather__body">
-						<div class="temperature">
-							<span class="size-heading-xl font-narrow lead-solid temperature__actual">${Math.round(data.temperature)}&deg;</span>
-							<span class="size-heading-l font-narrow lead-solid temperature__apparent">(feels like ${Math.round(data.apparentTemperature)}&deg;)</span>
-						</div>
-						<div class="size-heading-m weather__summary">${data.summary}</div>
-					</div>
-				</div>
-			</div>
-		`;
-		this.$container.prepend(template);
+	renderWeatherIcon() {
+		const icon = this.forecast.currently.icon;
+		return (`
+			<div class="weather__icon">${this.parseWeatherIcon(icon)}</div>
+		`);
 	}
-	renderPrecip() {
+	parseWeatherIcon(iconCode) {
+		let celestial, cloud, condition, newCode = false;
+		// TODO: Implement wind, fog
+		switch(iconCode) {
+			case 'clear-day':
+				newCode = 'clear';
+				celestial = 'sun';
+				break;
+			case 'clear-night':
+				newCode = 'clear';
+				celestial = 'moon';
+				break;
+			case 'cloudy':
+				newCode = 'cloudy';
+				cloud = 'cloud';
+				break;
+			case 'partly-cloudy-day':
+				newCode = 'cloudy';
+				celestial = 'sun';
+				cloud = 'cloud';
+				break;
+			case 'partly-cloudy-night':
+				newCode = 'cloudy';
+				celestial = 'moon';
+				cloud = 'cloud';
+				break;
+			case 'rain':
+				newCode = 'rain-moderate';
+				cloud = 'cloud';
+      			condition = 'rain-moderate';
+				break;
+			case 'snow':
+				newCode = 'snow-moderate';
+				cloud = 'cloud';
+      			condition = 'snow-moderate';
+				break;
+			case 'sleet':
+				newCode = 'snow-light';
+				cloud = 'cloud';
+      			condition = 'snow-light';
+				break;
+			default:
+				break;
+		}
+		return (`
+			<span class="icon" data-condition="${newCode}">
+				${(celestial) ? `<svg class="icon__celestial"><use xlink:href="#${celestial}"></use></svg>` : ''}
+				${(cloud) ? `<svg class="icon__cloud"><use xlink:href="#${cloud}"></use></svg>` : ''}
+				${(condition) ? `<svg class="icon__condition"><use xlink:href="#${condition}"></use></svg>` : ''}
+			</span>
+		`);
+	}
+	renderNextHourSummary() {
+		const summary = this.forecast.minutely.summary;
+		return (`
+			<div class="size-heading-s lead-title weather__summary">${summary}</div>
+		`);
+	}
+	renderTemperature() {
+		const data = this.forecast.currently;
+		if(data.temperature === data.apparentTemperature) {
+			return (`
+				<div class="size-heading-xl font-narrow weather__temperature">
+					${Math.round(data.temperature)}&deg;
+				</div>
+			`);
+		}
+		else {
+			return (`
+				<div class="lead-solid weather__temperature">
+					<span class="size-heading-xl font-narrow">${Math.round(data.temperature)}&deg;</span>
+					<span class="weather__temperature-feels">Feels like<br>${Math.round(data.apparentTemperature)}&deg;</span>
+				</div>
+			`);
+		}
+	}
+	renderRainGraph() {
 		const data = this.forecast.minutely;
-		const template = `
-			<div class="rain">
-				<div class="rain__graph">${this.parseRainGraph(data.data)}</div>
-				<div class="size-small rain__summary">${data.summary}</div>
+		return (`
+			<div class="weather__rain-graph">
+				<div class="rain">${this.parseRainGraph(data.data)}</div>
 			</div>
-		`;
-		this.$container.append(template);
+		`);
 	}
 	parseRainGraph(dataArray) {
-		let returnHtml = '';
+		let outputHtml = '';
 		const highestIntensity = 10; // 10mm is a lot, right? 
 		$.each(dataArray, (i, minute) => {
 			let percentage = (minute.precipIntensity / highestIntensity) * 100;
 			if(percentage > 100) { percentage = 100; }
-			returnHtml += `<div class="rain__bar" style="height:${percentage}%"></div>`;
+			outputHtml += `<div class="rain__bar" style="height:${percentage}%"></div>`;
 		});
-		return returnHtml;
+		return outputHtml;
+	}
+	showRainGraph(dataArray) {
+		let chanceOfRain = false;
+		console.log('rainGraphDataArray', dataArray);
+		$.each(dataArray, (i, minute) => {
+			console.log(minute.precipProbability);
+			if(minute.precipProbability > 0) {
+				chanceOfRain = true;
+				return false;
+			}
+		});
+		return chanceOfRain;
 	}
 }
 

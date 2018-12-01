@@ -1,23 +1,122 @@
-#darksky {
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: stretch;
-}
-
-#darksky-attribution {
-	position: absolute;
-	bottom: 0;
-	right: 0;
-	color: inherit;
-	opacity: .67;
-}
-
-.darksky-label {
-	margin-bottom: .5rem;
-}
-
 .weather {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-auto-rows: 1fr 1fr 2fr;
+	grid-gap: 1rem;
+	padding: 1rem;
+	height: 100vh;
+	border-radius: 1rem;
+	background-color: var(--dark);
+}
+	.weather__icon {
+		grid-area: 1 / 1 / 3 / 2;
+	}
+	.weather__summary {
+		grid-area: 1 / 2 / 2 / 4;
+	}
+	.weather__temperature {
+		grid-area: 2 / 2 / 3 / 4;
+		display: flex;
+		align-items: center;
+	}
+	.weather__temperature-feels {
+		display: block;
+	}
+	.weather__rain-graph {
+		grid-area: 3 / 1 / 4 / 4;
+	}
+
+.rain {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-end;
+	height: 100%;
+	border-bottom: 1px solid var(--mid);
+}
+	.rain__bar {
+		display: block;
+		width: 4px;
+		background-color: rgba(43, 134, 243, 1);
+		border-top-left-radius: 2px;
+		border-top-right-radius: 2px;
+	}
+		.rain__bar + .rain__bar {
+			margin-left: 2px;
+		}
+
+.icon {
+	display: inline-block;
+	position: relative;
+	width: 50vh;
+	height: 50vh;
+}
+	.icon__celestial,
+	.icon__cloud,
+	.icon__condition {
+		position: absolute;
+	}
+	.icon__celestial {
+		width: 40%;
+		height: 40%;
+		top: 10%;
+		left: 10%;
+	}
+	.icon__cloud {
+		width: 100%;
+		height: 40%;
+		top: 20%;
+		right: 0;
+		fill: #DAEAF2; 
+	}
+	.icon__condition {
+		width: 70%;
+		height: 40%;
+		bottom: 10%;
+		left: 15%;
+	}
+	.icon:not([data-condition*="clear"]):not([data-condition*="rain"]):not([data-condition*="snow"]):not([data-condition*="storm"]):not([data-condition*="overcast"]) .icon__celestial {
+		top: 25%;
+	}
+	.icon:not([data-condition*="clear"]):not([data-condition*="rain"]):not([data-condition*="snow"]):not([data-condition*="storm"]):not([data-condition*="overcast"]) .icon__cloud {
+		top: 35%;
+	}
+	.icon[data-condition*="rain"][data-condition*="moderate"] .icon__cloud,
+	.icon[data-condition*="snow"][data-condition*="moderate"] .icon__cloud {
+		fill: #C1D1D9;
+	}
+	.icon[data-condition*="rain"][data-condition*="heavy"] .icon__cloud,
+	.icon[data-condition*="snow"][data-condition*="heavy"] .icon__cloud {
+		fill: #A7B7BF;
+	}
+	.icon[data-condition*="rain"] .icon__condition {
+		fill: #5FA6EE;
+	}
+	.icon[data-condition*="snow"] .icon__condition {
+		fill: #B4C6CC;
+	}
+	.icon[data-condition*="storm"] .icon__cloud {
+		fill: #A7B7BF;
+		z-index: 1;
+	}
+	.icon[data-condition*="storm"] .icon__condition {
+		fill: #FDC841;
+	}
+	.icon[data-condition*="clear"] .icon__celestial {
+		width: 70%;
+		height: 70%;
+		top: 15%;
+		left: 15%;
+	}
+	.icon[data-condition*="overcast"] .icon__cloud {
+		width: 90%;
+		height: 90%;
+		top: 5%;
+		left: 5%;
+	}
+
+/*.weather {
 	
 }
 	.weather__inner {
@@ -84,4 +183,4 @@
 		margin-top: 0;
 		margin-left: 2rem;
 	}
-}
+}*/
