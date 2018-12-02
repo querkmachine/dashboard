@@ -130,7 +130,7 @@ class DarkSky {
 			if(percentage > 100) { percentage = 100; }
 			if(minute.precipIntensity > 0) {
 				minPercentage = ((minute.precipIntensity - minute.precipIntensityError) / highestIntensity) * 100;
-				if(minPercentage < 0) { minPercentage = 0; }
+				if(minPercentage < 1) { minPercentage = 1; }
 				maxPercentage = ((minute.precipIntensity + minute.precipIntensityError) / highestIntensity) * 100;
 				if(maxPercentage > 100) { maxPercentage = 100; }
 			}
