@@ -23,7 +23,7 @@ class DarkSky {
 			this.forecast = data;
 			this.$container.html('').append(this.renderWeatherIcon()).append(this.renderNextHourSummary()).append(this.renderTemperature());
 			if(this.showRainGraph(data.minutely.data)) {
-				this.$container.addClass('weather--rain').append(this.renderRainGraph());
+				this.$container.addClass('weather--rain').append(this.renderRainGraph()).append(this.uiRainGraphVariance());
 			}
 			else {
 				this.$container.removeClass('weather--rain');
@@ -114,20 +114,27 @@ class DarkSky {
 		}
 	}
 	renderRainGraph() {
-		const data = this.forecast.minutely;
+		let highestIntensity = (this.forecast.daily.data[0].precipIntensityMax > 9) ? this.forecast.daily.data[0].precipIntensityMax : 9;
 		return (`
 			<div class="weather__rain-graph">
-				<div class="rain">${this.parseRainGraph(data.data)}</div>
+				<div class="rain">${this.parseRainGraph(this.forecast.minutely.data, highestIntensity)}</div>
 			</div>
 		`);
 	}
-	parseRainGraph(dataArray) {
+	parseRainGraph(dataArray, highestIntensity) {
 		let outputHtml = '';
-		const highestIntensity = 10; // 10mm is a lot, right? 
 		$.each(dataArray, (i, minute) => {
 			let percentage = (minute.precipIntensity / highestIntensity) * 100;
+			let minPercentage = 0;
+			let maxPercentage = 0;
 			if(percentage > 100) { percentage = 100; }
-			outputHtml += `<div class="rain__bar" style="height:${percentage}%"></div>`;
+			if(minute.precipIntensity > 0) {
+				minPercentage = ((minute.precipIntensity - minute.precipIntensityError) / highestIntensity) * 100;
+				if(minPercentage < 0) { minPercentage = 0; }
+				maxPercentage = ((minute.precipIntensity + minute.precipIntensityError) / highestIntensity) * 100;
+				if(maxPercentage > 100) { maxPercentage = 100; }
+			}
+			outputHtml += `<div class="rain__bar" style="height:${percentage}%;min-height:${minPercentage}%;max-height:${maxPercentage}%;"></div>`;
 		});
 		return outputHtml;
 	}
@@ -135,13 +142,31 @@ class DarkSky {
 		let chanceOfRain = false;
 		console.log('rainGraphDataArray', dataArray);
 		$.each(dataArray, (i, minute) => {
-			console.log(minute.precipProbability);
 			if(minute.precipProbability > 0) {
 				chanceOfRain = true;
 				return false;
 			}
 		});
 		return chanceOfRain;
+	}
+	uiRainGraphVariance() {
+		let styles = '';
+		$('.rain__bar').each((i, bar) => {
+			const $bar = $(bar);
+			if($bar.height() > 0) {
+				const minHeight = $bar.css('min-height');
+				const maxHeight = $bar.css('max-height');
+				styles += `
+					.rain__bar:nth-child(${i + 1}) { animation-name: rainVariance${i}; animation-duration: ${(parseFloat(maxHeight) - parseFloat(minHeight)) / 5}s; animation-delay: ${i * .25}s; }
+					@keyframes rainVariance${i} {
+						0%, 50%, 100% { height: ${$bar.css('height')} }
+						25% { height: ${$bar.css('max-height')} }
+						75% { height: ${$bar.css('min-height')} }
+					}
+				`;
+			}
+		});
+		return `<style>${styles}</style>`;
 	}
 }
 

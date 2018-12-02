@@ -34,6 +34,8 @@
 	align-items: flex-end;
 	height: 100%;
 	border-bottom: 1px solid var(--mid);
+	background-image: repeating-linear-gradient(to top, transparent 0, transparent calc(100% - 1px), var(--mid) calc(100% - 1px), var(--mid) 100%);
+	background-size: 100% 33.3333%;
 }
 	.rain__bar {
 		display: block;
@@ -41,6 +43,9 @@
 		background-color: rgba(43, 134, 243, 1);
 		border-top-left-radius: 2px;
 		border-top-right-radius: 2px;
+		animation-timing-function: linear;
+		animation-duration: 1s;
+		animation-iteration-count: infinite;
 	}
 		.rain__bar + .rain__bar {
 			margin-left: 2px;
