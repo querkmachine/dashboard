@@ -22,7 +22,7 @@
 	{%- endfor %}
 	<title>Dashboard</title>
 </head>
-<body>
+<body style="cursor: none">
 
 	{% block main %}
 		No content loaded.
@@ -44,6 +44,19 @@
 			<script src="/integrations/{{ settings.path }}/{{ script }}"></script>
 		{%- endif %}
 	{%- endfor %}
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+	<script>
+		const socket = io();
+		socket.on('command', (cmd, params) => {
+			switch(cmd) {
+				// Toggle mouse
+				case 'mouse':
+					if(params === true) { document.getElementsByTagName('body')[0].style.cursor = 'auto'; } else { document.getElementsByTagName('body')[0].style.cursor = 'none'; }
+					break;
+			}
+		});
+	</script>
 
 </body>
 </html>

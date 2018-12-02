@@ -7,6 +7,7 @@ const _        = require('lodash');
 const express  = require('express');
 const app      = express();
 const http     = require('http').createServer(app);
+const io       = require('socket.io')(http);
 const nunjucks = require('nunjucks');
 
 /**
@@ -34,6 +35,23 @@ nunjucks.configure(__dirname, {
 	express: app
 });
 
+// Websockets
+io.sockets.on('connection', (socket) => {
+	socket.on('connect', () => {
+		console.log('Connected to control panel.');
+	});
+	socket.on('disconnect', () => {
+		console.log('Disconnected from control panel.');
+	});
+	socket.on('reconnect', () => {
+		console.log('Reconnected to control panel.');
+	});
+	socket.on('command', (cmd, params) => {
+		io.emit('command', cmd, params);
+		console.log('Command:', cmd, params);
+	})
+});
+
 // Static assets URL
 app.use('/themes', express.static('themes'));
 app.use('/integrations', express.static('integrations'));
@@ -41,6 +59,12 @@ app.use('/integrations', express.static('integrations'));
 // Dashboard page routing
 app.get('/', (req, res) => {
 	res.render(`index.html`, {
+		settings: config
+	});
+});
+
+app.get('/admin', (req, res) => {
+	res.render(`admin.html`, {
 		settings: config
 	});
 });

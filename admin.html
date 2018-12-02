@@ -1,0 +1,43 @@
+{{ settings | dump }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+
+	<form>
+		<button type="button" name="reload">Reload dashboard</button>
+		<fieldset>
+			<legend>Debugging</legend>
+			<label><input type="checkbox" name="mouse"> Enable mouse cursor</label>
+			<label><input type="checkbox" name="debug"> Show debugging</label>
+		</fieldset>
+	</form>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+	<script>
+		const socket = io();
+		document.querySelector('[name="reload"]').addEventListener('click', () => {
+			socket.emit('command', 'reload', {});
+		});
+		document.querySelector('[name="mouse"]').addEventListener('click', () => {
+			if(document.querySelector('[name="mouse"]').checked === true) {
+				socket.emit('command', 'mouse', true);
+			}
+			else {
+				socket.emit('command', 'mouse', false);
+			}
+		});
+		document.querySelector('[name="debug"]').addEventListener('click', () => {
+			if(document.querySelector('[name="debug"]').checked === true) {
+				socket.emit('command', 'debug', true);
+			}
+			else {
+				socket.emit('command', 'debug', false);
+			}
+		});
+	</script>
+</body>
+</html>

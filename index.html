@@ -21,7 +21,7 @@
 	{%- endfor %}
 	<title>Dashboard</title>
 </head>
-<body id="dashboard">
+<body id="dashboard" style="cursor:none">
 
 	{% for integration in settings.integrations -%}
 		{% set integrationWidth = settings[integration].width or 1 %}
@@ -29,24 +29,29 @@
 		<iframe scrolling="no" class="section__iframe width-{{ integrationWidth }} height-{{ integrationHeight }}" id="{{ integration }}" src="integration/{{ integration }}"></iframe>
 	{%- endfor %}
 
-	{% if settings.debug -%}
 	<!-- DEBUG -->
 	<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);color:#fff;overflow:auto;" id="DEBUGMODE" hidden><code>{{ settings | dump }}</code></div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 	<script>
-		const debugScreen = document.getElementById('DEBUGMODE');
-		document.addEventListener('keypress', (event) => {
-			if(event.key === 'd' && event.metaKey === true) {
-				event.preventDefault();
-				if(debugScreen.getAttribute('hidden') !== null) {
-					debugScreen.removeAttribute('hidden');
-				}
-				else {
-					debugScreen.setAttribute('hidden', 'hidden');
-				}
+		const socket = io();
+		socket.on('command', (cmd, params) => {
+			switch(cmd) {
+				// Reload dashboard
+				case 'reload':
+					window.location.href = window.location.href;
+					break;
+				// Toggle debug code
+				case 'debug':
+					const debugScreen = document.getElementById('DEBUGMODE');
+					if(params === true) { debugScreen.removeAttribute('hidden'); } else { debugScreen.setAttribute('hidden', 'hidden'); }
+					break;
+				// Toggle mouse
+				case 'mouse':
+					if(params === true) { document.getElementsByTagName('body')[0].style.cursor = 'auto'; } else { document.getElementsByTagName('body')[0].style.cursor = 'none'; }
+					break;
 			}
 		});
 	</script>
-	{%- endif %}
 
 </body>
 </html>
