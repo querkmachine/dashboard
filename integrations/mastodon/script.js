@@ -10,7 +10,10 @@ class Mastodon {
 		this.lastStatusId = 0; // tracks the last status ID we received, so we don't get dupes 
 		// Start the thing
 		this.getTimeline();
-		this.startStream();
+		setInterval(() => {
+			this.getTimeline();
+		}, 1000 * 60);
+		//this.startStream();
 	}
 	getTimeline() {
 		this.api.get('timelines/home', {
@@ -25,17 +28,17 @@ class Mastodon {
 			});
 		})
 	}
-	startStream() {
-		this.api.stream('user', (data) => {
-			//console.log('new streamed toot', data);
-			if(data.event === "update") {
-				this.addTootToTimeline(data.payload);
-			}
-			else if(data.event === "delete") {
-				$(`#toot-${data.payload}`).remove();
-			}
-		});
-	}
+	// startStream() {
+	// 	this.api.stream('user', (data) => {
+	// 		//console.log('new streamed toot', data);
+	// 		if(data.event === "update") {
+	// 			this.addTootToTimeline(data.payload);
+	// 		}
+	// 		else if(data.event === "delete") {
+	// 			$(`#toot-${data.payload}`).remove();
+	// 		}
+	// 	});
+	// }
 	addTootToTimeline(toot) {
 		this.lastStatusId = toot.id;
 		let reblogger = false;
