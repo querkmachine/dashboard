@@ -114,7 +114,8 @@ class DarkSky {
 		}
 	}
 	renderRainGraph() {
-		let highestIntensity = (this.forecast.daily.data[0].precipIntensityMax > 9) ? this.forecast.daily.data[0].precipIntensityMax : 9;
+		const defaultHighestIntensity = 6; // mm 
+		let highestIntensity = (this.forecast.daily.data[0].precipIntensityMax > defaultHighestIntensity) ? this.forecast.daily.data[0].precipIntensityMax : defaultHighestIntensity;
 		return (`
 			<div class="weather__rain-graph">
 				<div class="rain">${this.parseRainGraph(this.forecast.minutely.data, highestIntensity)}</div>
